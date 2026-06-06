@@ -4,18 +4,16 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().min(1, "OPENAI_API_KEY is required"),
   MONGODB_URI: z.string().min(1),
   DB_NAME: z.string().min(1),
-  HUME_API_KEY: z.string().min(1),
-  HUME_SECRET_KEY: z.string().min(1),
-  HUME_CONFIG_ID: z.string().optional().default(""),
+  ELEVENLABS_API_KEY: z.string().min(1),
+  ELEVENLABS_AGENT_ID: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse({
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   MONGODB_URI: process.env.MONGODB_URI,
   DB_NAME: process.env.DB_NAME,
-  HUME_API_KEY: process.env.HUME_API_KEY,
-  HUME_SECRET_KEY: process.env.HUME_SECRET_KEY,
-  HUME_CONFIG_ID: process.env.HUME_CONFIG_ID,
+  ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY,
+  ELEVENLABS_AGENT_ID: process.env.ELEVENLABS_AGENT_ID,
 });
 
 if (!parsed.success) {

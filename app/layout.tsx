@@ -35,7 +35,7 @@ export default function RootLayout({
               <Link href="/assessment" className="hover:text-indigo-600">Assessment</Link>
               <Link href="/chat" className="hover:text-indigo-600">AI Chat</Link>
               <Link href="/dashboard" className="hover:text-indigo-600">Dashboard</Link>
-              <Link href="/hume" className="hover:text-indigo-600">Hume Voice</Link>
+              <Link href="/elevenlabs" className="hover:text-indigo-600">ElevenLabs Voice</Link>
               <Link href="/facilities" className="hover:text-indigo-600">Facilities</Link>
               <Link href="/exercises" className="hover:text-indigo-600">Exercises</Link>
               <Link href="/blogs" className="hover:text-indigo-600">Blogs</Link>

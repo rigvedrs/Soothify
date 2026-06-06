@@ -17,10 +17,9 @@
     "seed": "TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\":\\\"commonjs\\\",\\\"moduleResolution\\\":\\\"node\\\"}\" ts-node --transpile-only ./scripts/seed.ts"
   },
   "dependencies": {
+    "@elevenlabs/react": "^1.6.4",
     "@faker-js/faker": "^10.0.0",
-    "@humeai/voice-react": "^0.2.3",
     "geolib": "^3.3.4",
-    "hume": "^0.13.6",
     "leaflet": "^1.9.4",
     "lottie-web": "^5.13.0",
     "mongoose": "^8.18.1",
