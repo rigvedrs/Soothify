@@ -14,7 +14,8 @@
     "db:stop": "./scripts/mongodb.sh stop",
     "db:status": "./scripts/mongodb.sh status",
     "db:connect": "./scripts/mongodb.sh connect",
-    "seed": "TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\":\\\"commonjs\\\",\\\"moduleResolution\\\":\\\"node\\\"}\" ts-node --transpile-only ./scripts/seed.ts"
+    "seed": "TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\":\\\"commonjs\\\",\\\"moduleResolution\\\":\\\"node\\\"}\" ts-node --transpile-only ./scripts/seed.ts",
+    "seed:redis": "TS_NODE_COMPILER_OPTIONS=\"{\\\"module\\\":\\\"commonjs\\\",\\\"moduleResolution\\\":\\\"node\\\"}\" ts-node --transpile-only ./scripts/seed-redis.ts"
   },
   "dependencies": {
     "@elevenlabs/react": "^1.6.4",
@@ -30,6 +31,7 @@
     "react-dom": "19.1.0",
     "react-leaflet": "^5.0.0",
     "react-plotly.js": "^2.6.0",
+    "redis": "^6.0.0",
     "zod": "^3.25.76",
     "zustand": "^5.0.8"
   },

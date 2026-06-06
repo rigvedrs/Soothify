@@ -22,6 +22,10 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw API_ERRORS.UNPROCESSABLE_ENTITY("File size must be less than 25MB");
   }
 
+  if (!env.OPENAI_API_KEY) {
+    throw API_ERRORS.INTERNAL_SERVER_ERROR("OPENAI_API_KEY is required for audio transcription.");
+  }
+
   const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
   try {
@@ -54,5 +58,4 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw error;
   }
 });
-
 

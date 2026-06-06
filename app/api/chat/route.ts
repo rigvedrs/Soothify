@@ -10,6 +10,10 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const body = await req.json();
   const { messages } = ChatRequestSchema.parse(body);
 
+  if (!env.OPENAI_API_KEY) {
+    throw API_ERRORS.INTERNAL_SERVER_ERROR("OPENAI_API_KEY is required for AI chat.");
+  }
+
   const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
   try {

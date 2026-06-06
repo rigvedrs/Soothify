@@ -166,10 +166,14 @@ function AudioSession({
   signedUrl,
   mode,
   usingFallbackAgent,
+  sessionId,
+  recallContext,
 }: {
   signedUrl: string;
   mode: "standard" | "panic";
   usingFallbackAgent: boolean;
+  sessionId: string | null;
+  recallContext: string[];
 }) {
   const router = useRouter();
   const [connecting, setConnecting] = useState(false);
@@ -276,7 +280,14 @@ function AudioSession({
   const onStop = useCallback(async () => {
     setError(null);
     await endSession();
-  }, [endSession]);
+    if (sessionId) {
+      await fetch(`/api/companion/sessions/${sessionId}/end`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ outcome: "unfinished", summary: "Audio companion session ended." }),
+      });
+    }
+  }, [endSession, sessionId]);
 
   const onSwitchToPanic = useCallback(async () => {
     setSwitchingToPanic(true);
@@ -284,10 +295,17 @@ function AudioSession({
       if (isConnected) {
         await endSession();
       }
+      if (sessionId) {
+        await fetch(`/api/companion/sessions/${sessionId}/end`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ outcome: "unfinished", summary: "Audio companion switched to panic support." }),
+        });
+      }
     } finally {
       router.push("/companion/audio?mode=panic");
     }
-  }, [endSession, isConnected, router]);
+  }, [endSession, isConnected, router, sessionId]);
 
   return (
     <main className="mx-auto max-w-2xl space-y-5">
@@ -321,6 +339,9 @@ function AudioSession({
         <p className="text-center text-sm muted">
           Status: {isConnected ? "Connected" : connecting ? "Connecting" : "Disconnected"}
         </p>
+        <p className="text-center text-sm muted">
+          {recallContext.length > 0 ? `Memory context loaded: ${recallContext.length} notes` : "No prior memory context yet"}
+        </p>
 
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
       </div>
@@ -332,14 +353,24 @@ export default function ElevenLabsAudioClient({
   signedUrl,
   mode,
   usingFallbackAgent,
+  sessionId,
+  recallContext,
 }: {
   signedUrl: string;
   mode: "standard" | "panic";
   usingFallbackAgent: boolean;
+  sessionId: string | null;
+  recallContext: string[];
 }) {
   return (
     <ConversationProvider>
-      <AudioSession signedUrl={signedUrl} mode={mode} usingFallbackAgent={usingFallbackAgent} />
+      <AudioSession
+        signedUrl={signedUrl}
+        mode={mode}
+        usingFallbackAgent={usingFallbackAgent}
+        sessionId={sessionId}
+        recallContext={recallContext}
+      />
     </ConversationProvider>
   );
 }
