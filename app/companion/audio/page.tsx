@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ElevenLabsAudioClient from "./Client";
 
-export default function AudioCompanionPage() {
+function AudioCompanionContent() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") === "panic" ? "panic" : "standard";
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
@@ -84,5 +84,22 @@ export default function AudioCompanionPage() {
       sessionId={sessionId}
       recallContext={recallContext}
     />
+  );
+}
+
+export default function AudioCompanionPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-2xl space-y-4">
+          <h1 className="text-3xl font-semibold tracking-tight text-center">Audio Companion</h1>
+          <div className="card p-6 text-center">
+            <p className="muted">Loading audio session...</p>
+          </div>
+        </main>
+      }
+    >
+      <AudioCompanionContent />
+    </Suspense>
   );
 }

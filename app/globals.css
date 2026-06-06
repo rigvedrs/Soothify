@@ -22,17 +22,6 @@ html {
   --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --surface: #111214;
-    --muted: #9aa4b2;
-    --border: #26272b;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-  }
-}
-
 /* Manual theme override via class */
 .dark-theme {
   --background: #0a0a0a;
