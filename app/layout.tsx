@@ -46,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="light-theme" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
         <header className="sticky top-0 z-40 border-b border-[#E2E8F0] bg-white/90 backdrop-blur-md">
           <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
