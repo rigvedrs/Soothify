@@ -15,9 +15,6 @@
    ```
 
 2. **Configure environment:**
-   ```bash
-   cp .env.local.example .env.local
-   ```
    Fill in your API keys and database connection details in `.env.local`:
    ```env
    OPENAI_API_KEY=your_openai_key
@@ -40,11 +37,6 @@
 npm run dev
 ```
 
-**For full audio features, also start the WebSocket relay:**
-```bash
-npm run dev:ws
-```
-
 The application will be available at `http://localhost:3000` with the following key features:
 
 ## Key Features
@@ -52,7 +44,7 @@ The application will be available at `http://localhost:3000` with the following 
 - **🤖 AI Chat**: Real-time conversational AI with streaming responses and text-to-speech
 - **📊 Assessment Tools**: Interactive mental health assessments with progress tracking
 - **📈 Dashboard**: Personal mood tracking and analytics with MongoDB integration
-- **🎙️ Voice Integration**: Speech-to-text transcription and audio processing via Hume AI
+- **🎙️ Voice Integration**: Realtime empathic voice chat via Hume AI
 - **🗺️ Resource Locator**: Find nearby mental health facilities and resources
 - **💪 Wellness Exercises**: Guided exercises and coping strategies
 - **📚 Educational Content**: Mental health blogs and informational resources
@@ -69,7 +61,7 @@ The application will be available at `http://localhost:3000` with the following 
 │   └── [utils]/       # Helper functions and schemas
 ├── models/             # MongoDB data models
 ├── public/             # Static assets
-└── server/             # WebSocket server for audio features
+└── server/             # Server-side utilities
 ```
 
 ## Testing
