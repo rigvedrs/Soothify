@@ -84,12 +84,14 @@ function Visualizer() {
 function PanicSupportBlock({
   sourceLabel,
   usingFallbackAgent,
+  showSessionControls,
   onStay,
   onSwitchToPanic,
   switching,
 }: {
   sourceLabel: string;
   usingFallbackAgent: boolean;
+  showSessionControls: boolean;
   onStay: () => void;
   onSwitchToPanic: () => void;
   switching: boolean;
@@ -123,21 +125,25 @@ function PanicSupportBlock({
       </div>
 
       <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={onStay}
-          className="inline-flex rounded-full border border-[#D8A39B] px-5 py-3 text-sm font-semibold text-[#7A3A31] transition-colors hover:border-[#C65D4B] hover:bg-white"
-        >
-          Stay in current session
-        </button>
-        <button
-          type="button"
-          onClick={onSwitchToPanic}
-          disabled={switching}
-          className="inline-flex rounded-full bg-[#C65D4B] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(198,93,75,0.25)] transition-colors hover:bg-[#B14F3E] disabled:cursor-not-allowed disabled:bg-[#D99B91]"
-        >
-          {switching ? "Switching..." : "Switch to Panic Support"}
-        </button>
+        {showSessionControls && (
+          <>
+            <button
+              type="button"
+              onClick={onStay}
+              className="inline-flex rounded-full border border-[#D8A39B] px-5 py-3 text-sm font-semibold text-[#7A3A31] transition-colors hover:border-[#C65D4B] hover:bg-white"
+            >
+              Stay in current session
+            </button>
+            <button
+              type="button"
+              onClick={onSwitchToPanic}
+              disabled={switching}
+              className="inline-flex rounded-full bg-[#C65D4B] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(198,93,75,0.25)] transition-colors hover:bg-[#B14F3E] disabled:cursor-not-allowed disabled:bg-[#D99B91]"
+            >
+              {switching ? "Switching..." : "Switch to Panic Support"}
+            </button>
+          </>
+        )}
         <a
           href="sms:988"
           className="inline-flex rounded-full border border-[#D8A39B] px-5 py-3 text-sm font-semibold text-[#7A3A31] transition-colors hover:border-[#C65D4B] hover:bg-white"
@@ -153,7 +159,9 @@ function PanicSupportBlock({
       </div>
 
       <p className="mt-4 text-center text-xs text-[#8B5A54]">
-        Triggered by {sourceLabel}. Keep the conversation going here or switch to the dedicated panic companion.
+        {showSessionControls
+          ? `Triggered by ${sourceLabel}. Keep the conversation going here or switch to the dedicated panic companion.`
+          : "You are in the dedicated panic support session now. Stay with the grounding steps or reach out for immediate help if needed."}
       </p>
 
       {usingFallbackAgent && (
@@ -185,6 +193,20 @@ function AudioSession({
   const [panicEvidence, setPanicEvidence] = useState<string[]>([]);
   const sentPanicUpdateRef = useRef(mode === "panic");
 
+  const handlePanicDetection = useCallback(
+    (message: string) => {
+      if (mode === "panic") return;
+
+      const detection = detectPanicSignals(message);
+      if (!detection.detected) return;
+
+      setPanicActive(true);
+      setPanicSource("transcript");
+      setPanicEvidence(detection.evidence);
+    },
+    [mode]
+  );
+
   const { startSession, endSession, status, sendContextualUpdate } = useConversation({
     onConnect: () => {
       setConnecting(false);
@@ -196,15 +218,10 @@ function AudioSession({
       setError(typeof message === "string" ? message : "Connection error");
       setConnecting(false);
     },
-    onMessage: ({ message, role }) => {
-      if (role !== "user" || mode === "panic") return;
-
-      const detection = detectPanicSignals(message);
-      if (!detection.detected) return;
-
-      setPanicActive(true);
-      setPanicSource("transcript");
-      setPanicEvidence(detection.evidence);
+    onMessage: ({ message, role, source }) => {
+      const isUserMessage = role === "user" || source === "user";
+      if (!isUserMessage) return;
+      handlePanicDetection(message);
     },
   });
 
@@ -253,12 +270,19 @@ function AudioSession({
 
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
-      await startSession({ signedUrl });
+      await startSession({
+        signedUrl,
+        onMessage: ({ message, role, source }) => {
+          const isUserMessage = role === "user" || source === "user";
+          if (!isUserMessage) return;
+          handlePanicDetection(message);
+        },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to connect");
       setConnecting(false);
     }
-  }, [startSession, signedUrl]);
+  }, [handlePanicDetection, startSession, signedUrl]);
 
   const onStop = useCallback(async () => {
     setError(null);
@@ -291,6 +315,7 @@ function AudioSession({
         <PanicSupportBlock
           sourceLabel={panicSourceLabel}
           usingFallbackAgent={usingFallbackAgent}
+          showSessionControls={!isPanicMode}
           onStay={onStay}
           onSwitchToPanic={onSwitchToPanic}
           switching={switchingToPanic}
