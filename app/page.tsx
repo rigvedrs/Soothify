@@ -3,9 +3,9 @@ import Image from "next/image";
 
 const cards = [
   { title: "Begin Assessment", href: "/assessment", desc: "10 quick questions to personalize your journey." },
+  { title: "Companion", href: "/companion", desc: "Choose audio or video support before starting." },
   { title: "AI Chat", href: "/chat", desc: "Talk to an assistant that listens and guides." },
   { title: "Dashboard", href: "/dashboard", desc: "Track moods, patterns, and progress." },
-  { title: "Hume Voice", href: "/hume", desc: "Try empathic voice with the Hume EVI SDK." },
   { title: "Facilities", href: "/facilities", desc: "Find nearby mental health facilities." },
   { title: "Exercises", href: "/exercises", desc: "Short practices to calm and reset." },
   { title: "Blogs", href: "/blogs", desc: "Curated learning to support your wellness." },

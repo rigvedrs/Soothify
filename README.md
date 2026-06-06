@@ -19,13 +19,16 @@
    cp .env.local.example .env.local
    ```
    Fill in your API keys and database connection details in `.env.local`:
-   ```env
+   
+   ```bash
    OPENAI_API_KEY=your_openai_key
    MONGODB_URI=mongodb://localhost:27017
    DB_NAME=soothify
-   HUME_API_KEY=your_hume_key
-   HUME_SECRET_KEY=your_hume_secret
-   HUME_CONFIG_ID=your_config_id
+   ELEVENLABS_API_KEY=your_elevenlabs_key
+   ELEVENLABS_AGENT_ID=your_elevenlabs_agent_id
+   TAVUS_API_KEY=your_tavus_key
+   TAVUS_REPLICA_ID=your_tavus_replica_id
+   TAVUS_PERSONA_ID=your_tavus_persona_id
    ```
 
 3. **Seed demo data (optional):**
@@ -40,11 +43,6 @@
 npm run dev
 ```
 
-**For full audio features, also start the WebSocket relay:**
-```bash
-npm run dev:ws
-```
-
 The application will be available at `http://localhost:3000` with the following key features:
 
 ## Key Features
@@ -52,7 +50,8 @@ The application will be available at `http://localhost:3000` with the following 
 - **🤖 AI Chat**: Real-time conversational AI with streaming responses and text-to-speech
 - **📊 Assessment Tools**: Interactive mental health assessments with progress tracking
 - **📈 Dashboard**: Personal mood tracking and analytics with MongoDB integration
-- **🎙️ Voice Integration**: Speech-to-text transcription and audio processing via Hume AI
+- **🎙️ Voice Integration**: Speech-to-text transcription and audio processing
+- **🎥 Video Companion**: Tavus-powered video companion sessions
 - **🗺️ Resource Locator**: Find nearby mental health facilities and resources
 - **💪 Wellness Exercises**: Guided exercises and coping strategies
 - **📚 Educational Content**: Mental health blogs and informational resources

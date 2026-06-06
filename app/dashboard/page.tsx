@@ -15,7 +15,8 @@ export default function Dashboard() {
   // load users
   const fetchUsers = useCallback(async () => {
     const res = await fetch('/api/users');
-    const list: string[] = await res.json();
+    const json = await res.json() as { data?: string[] };
+    const list = json.data ?? [];
     setUsers(list);
     if (!userId && list.length) setUserId(list[0]);
   }, [userId]);
@@ -32,8 +33,8 @@ export default function Dashboard() {
       if (end) qs.set('end', end);
       const url = `/api/user-data/${userId}` + (qs.toString() ? `?${qs}` : '');
       const res = await fetch(url);
-      const docs = await res.json();
-      setData(docs);
+      const json = await res.json() as { data?: UserData[] };
+      setData(json.data ?? []);
     })();
   }, [userId, start, end]);
 
@@ -122,8 +123,8 @@ export default function Dashboard() {
     });
     // refresh
     const res = await fetch(`/api/user-data/${userId}`);
-    const docs = await res.json();
-    setData(docs);
+    const json = await res.json() as { data?: UserData[] };
+    setData(json.data ?? []);
   };
 
   return (

@@ -33,9 +33,9 @@ export default function RootLayout({
             </Link>
             <nav className="hidden md:flex items-center gap-4 text-sm">
               <Link href="/assessment" className="hover:text-indigo-600">Assessment</Link>
+              <Link href="/companion" className="hover:text-indigo-600">Companion</Link>
               <Link href="/chat" className="hover:text-indigo-600">AI Chat</Link>
               <Link href="/dashboard" className="hover:text-indigo-600">Dashboard</Link>
-              <Link href="/hume" className="hover:text-indigo-600">Hume Voice</Link>
               <Link href="/facilities" className="hover:text-indigo-600">Facilities</Link>
               <Link href="/exercises" className="hover:text-indigo-600">Exercises</Link>
               <Link href="/blogs" className="hover:text-indigo-600">Blogs</Link>

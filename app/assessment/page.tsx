@@ -23,7 +23,8 @@ export default function Assessment() {
 
   const fetchUsers = useCallback(async () => {
     const res = await fetch('/api/users');
-    const list: string[] = await res.json();
+    const json = await res.json() as { data?: string[] };
+    const list = json.data ?? [];
     setUsers(list);
     if (!userId && list.length) setUserId(list[0]);
   }, [userId]);
