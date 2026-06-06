@@ -85,14 +85,12 @@ function PanicSupportBlock({
   sourceLabel,
   usingFallbackAgent,
   showSessionControls,
-  onStay,
   onSwitchToPanic,
   switching,
 }: {
   sourceLabel: string;
   usingFallbackAgent: boolean;
   showSessionControls: boolean;
-  onStay: () => void;
   onSwitchToPanic: () => void;
   switching: boolean;
 }) {
@@ -126,23 +124,14 @@ function PanicSupportBlock({
 
       <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
         {showSessionControls && (
-          <>
-            <button
-              type="button"
-              onClick={onStay}
-              className="inline-flex rounded-full border border-[#D8A39B] px-5 py-3 text-sm font-semibold text-[#7A3A31] transition-colors hover:border-[#C65D4B] hover:bg-white"
-            >
-              Stay in current session
-            </button>
-            <button
-              type="button"
-              onClick={onSwitchToPanic}
-              disabled={switching}
-              className="inline-flex rounded-full bg-[#C65D4B] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(198,93,75,0.25)] transition-colors hover:bg-[#B14F3E] disabled:cursor-not-allowed disabled:bg-[#D99B91]"
-            >
-              {switching ? "Switching..." : "Switch to Panic Support"}
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={onSwitchToPanic}
+            disabled={switching}
+            className="inline-flex rounded-full bg-[#C65D4B] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(198,93,75,0.25)] transition-colors hover:bg-[#B14F3E] disabled:cursor-not-allowed disabled:bg-[#D99B91]"
+          >
+            {switching ? "Switching..." : "Switch to Panic Support"}
+          </button>
         )}
         <a
           href="sms:988"
@@ -289,10 +278,6 @@ function AudioSession({
     await endSession();
   }, [endSession]);
 
-  const onStay = useCallback(() => {
-    setPanicActive(true);
-  }, []);
-
   const onSwitchToPanic = useCallback(async () => {
     setSwitchingToPanic(true);
     try {
@@ -316,7 +301,6 @@ function AudioSession({
           sourceLabel={panicSourceLabel}
           usingFallbackAgent={usingFallbackAgent}
           showSessionControls={!isPanicMode}
-          onStay={onStay}
           onSwitchToPanic={onSwitchToPanic}
           switching={switchingToPanic}
         />
