@@ -89,6 +89,12 @@ export default function Home() {
           >
             Open Companion
           </Link>
+          <Link
+            href="/companion/audio?mode=panic"
+            className="px-7 py-3 rounded-full bg-[#C65D4B] text-white text-sm font-semibold hover:bg-[#B14F3E] transition-colors shadow-[0_8px_22px_rgba(198,93,75,0.28)]"
+          >
+            Start Panic Support
+          </Link>
         </div>
       </section>
 

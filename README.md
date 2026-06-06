@@ -26,6 +26,7 @@
    DB_NAME=soothify
    ELEVENLABS_API_KEY=your_elevenlabs_key
    ELEVENLABS_AGENT_ID=your_elevenlabs_agent_id
+   ELEVENLABS_PANIC_AGENT_ID=your_panic_support_agent_id
    TAVUS_API_KEY=your_tavus_key
    TAVUS_REPLICA_ID=your_tavus_replica_id
    TAVUS_PERSONA_ID=your_tavus_persona_id
