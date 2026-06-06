@@ -1,10 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/env";
 
-export async function GET() {
-  const apiKey = process.env.ELEVENLABS_API_KEY;
-  const agentId = process.env.ELEVENLABS_AGENT_ID;
+export async function GET(req: NextRequest) {
+  const requestedMode = req.nextUrl.searchParams.get("mode");
+  const mode = requestedMode === "panic" ? "panic" : "standard";
+  const apiKey = env.ELEVENLABS_API_KEY;
+  const standardAgentId = env.ELEVENLABS_AGENT_ID;
+  const panicAgentId = env.ELEVENLABS_PANIC_AGENT_ID;
+  const requestedAgentId = mode === "panic" ? panicAgentId || standardAgentId : standardAgentId;
+  const usingFallbackAgent = mode === "panic" && !panicAgentId;
 
-  if (!apiKey || !agentId) {
+  if (!apiKey || !requestedAgentId) {
     return NextResponse.json(
       {
         error: "Missing ElevenLabs credentials",
@@ -14,7 +20,11 @@ export async function GET() {
     );
   }
 
-  if (apiKey === "your_elevenlabs_api_key" || agentId === "your_elevenlabs_agent_id") {
+  if (
+    apiKey === "your_elevenlabs_api_key" ||
+    standardAgentId === "your_elevenlabs_agent_id" ||
+    panicAgentId === "your_elevenlabs_panic_agent_id"
+  ) {
     return NextResponse.json(
       {
         error: "Placeholder credentials detected",
@@ -25,7 +35,7 @@ export async function GET() {
   }
 
   const response = await fetch(
-    `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agentId}`,
+    `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${requestedAgentId}`,
     { headers: { "xi-api-key": apiKey } }
   );
 
@@ -38,5 +48,9 @@ export async function GET() {
   }
 
   const { signed_url: signedUrl } = await response.json();
-  return NextResponse.json({ signedUrl });
+  return NextResponse.json({
+    signedUrl,
+    mode,
+    usingFallbackAgent,
+  });
 }
