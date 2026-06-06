@@ -68,10 +68,19 @@ export default function Assessment() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
         <div>
-          <label className="block text-sm muted">User</label>
-          <select className="input" value={userId} onChange={(e)=>setUserId(e.target.value)}>
-            {users.map(u => <option key={u} value={u}>{u}</option>)}
-          </select>
+          <label htmlFor="user-input" className="block text-sm muted mb-1">Your name</label>
+          <input
+            id="user-input"
+            type="text"
+            list="existing-users"
+            className="input"
+            placeholder="Type your name or pick an existing one…"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+          />
+          <datalist id="existing-users">
+            {users.map(u => <option key={u} value={u} />)}
+          </datalist>
         </div>
         {last && (
           <div className="text-sm muted">Last: {new Date(last.date).toLocaleString()} • Severity: <b>{last.severity}</b> • {last.percentage}%</div>
@@ -80,8 +89,8 @@ export default function Assessment() {
 
       {idx < questions.length ? (
         <div className="space-y-4">
-          <div className="w-full h-2 rounded bg-[#eef2ff]">
-            <div className="h-2 rounded bg-indigo-500" style={{ width: `${(idx / questions.length) * 100}%` }} />
+          <div className="w-full h-2 rounded bg-[rgba(59,130,246,0.1)]">
+            <div className="h-2 rounded bg-[#3B82F6]" style={{ width: `${(idx / questions.length) * 100}%` }} />
           </div>
           <p className="text-sm muted">Question {idx + 1} of {questions.length}</p>
           <div className="card p-4">
@@ -107,13 +116,13 @@ export default function Assessment() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {severity === 'mild' && (
               <>
-                <a className="btn btn-outline" href="/chat">AI Chat</a>
+                <a className="btn btn-outline" href="/companion">Open Companion</a>
                 <a className="btn btn-outline" href="/blogs">Wellness Blogs</a>
                 <a className="btn btn-outline" href="/exercises">Guided Exercises</a>
               </>
             )}
             {severity === 'moderate' && (
-              <a className="btn btn-outline" href="/chat">AI Chat</a>
+              <a className="btn btn-outline" href="/companion">Open Companion</a>
             )}
             {severity === 'severe' && (
               <a className="btn btn-outline" href="/facilities">Find Facilities</a>

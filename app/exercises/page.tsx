@@ -69,7 +69,7 @@ export default function Exercises() {
             <a key={e.title} className="card p-4 hover:shadow-sm" href={e.url} target="_blank" rel="noreferrer">
               <div className="text-lg font-medium">{e.title}</div>
               <div className="text-sm muted">{e.description}</div>
-              <div className="mt-2 text-sm" style={{ color: '#4f46e5' }}>{e.category} • ⏱️ {e.duration} • 📊 {e.difficulty}</div>
+              <div className="mt-2 text-sm" style={{ color: '#3B82F6' }}>{e.category} • ⏱️ {e.duration} • 📊 {e.difficulty}</div>
             </a>
           ))}
         </div>

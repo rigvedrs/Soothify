@@ -17,8 +17,7 @@ describe('ChatMessage', () => {
 
     expect(screen.getByText('Hello, how are you?')).toBeInTheDocument();
 
-    // Find the message bubble (the div with bg-indigo-600)
-    const messageBubble = container.querySelector('.bg-indigo-600');
+    const messageBubble = container.querySelector('.bg-\\[\\#3B82F6\\]');
     expect(messageBubble).toBeInTheDocument();
     expect(messageBubble).toHaveClass('text-white');
   });
@@ -28,9 +27,9 @@ describe('ChatMessage', () => {
 
     expect(screen.getByText('I am doing well, thank you for asking!')).toBeInTheDocument();
 
-    // Find the message bubble (the div with bg-slate-100)
-    const messageBubble = container.querySelector('.bg-slate-100');
+    const messageBubble = container.querySelector('.bg-\\[\\#F1F5F9\\]');
     expect(messageBubble).toBeInTheDocument();
+    expect(messageBubble).toHaveClass('border');
   });
 
   it('applies correct alignment for user messages', () => {
@@ -48,9 +47,10 @@ describe('ChatMessage', () => {
   });
 
   it('shows loading indicator for last assistant message when isLast is true', () => {
-    render(<ChatMessage message={mockAssistantMessage} isLast={true} />);
+    const { container } = render(<ChatMessage message={mockAssistantMessage} isLast={true} />);
 
     expect(screen.getByText('I am doing well, thank you for asking!')).toBeInTheDocument();
+    expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
   });
 
   it('handles empty content gracefully', () => {

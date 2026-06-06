@@ -53,7 +53,7 @@ export default function Blogs() {
             <a key={b.title} className="card p-4 hover:shadow-sm" href={b.url} target="_blank" rel="noreferrer">
               <div className="text-lg font-medium">{b.title}</div>
               <div className="text-sm muted">{b.excerpt}</div>
-              <div className="mt-2 text-sm" style={{ color: '#4f46e5' }}>{b.category} • {b.readTime} min • {new Date(b.date).toLocaleDateString()}</div>
+              <div className="mt-2 text-sm" style={{ color: '#3B82F6' }}>{b.category} • {b.readTime} min • {new Date(b.date).toLocaleDateString()}</div>
             </a>
           ))}
         </div>
