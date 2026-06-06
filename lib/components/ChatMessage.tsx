@@ -14,16 +14,16 @@ export function ChatMessage({ message, isLast = false }: ChatMessageProps) {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       <div
         className={`
-          inline-block max-w-[80%] px-4 py-3 rounded-lg
+          inline-block max-w-[80%] px-4 py-3 rounded-2xl text-sm
           ${isUser
-            ? 'bg-indigo-600 text-white'
-            : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100'
+            ? 'bg-[#3B82F6] text-white font-medium'
+            : 'bg-[#F1F5F9] border border-[#E2E8F0] text-[#0F172A]'
           }
           ${isLast && !isUser ? 'animate-pulse' : ''}
         `}
       >
         <div className="whitespace-pre-wrap break-words">
-          {message.content || (isLast && !isUser ? '...' : '')}
+          {message.content || (isLast && !isUser ? '…' : '')}
         </div>
       </div>
     </div>

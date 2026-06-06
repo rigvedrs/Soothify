@@ -63,7 +63,7 @@ export function ChatInput({ onSendMessage, disabled = false, placeholder = "Type
           className="input resize-none min-h-[44px] max-h-[120px] pr-12"
           rows={1}
         />
-        <div className="absolute right-2 bottom-2 text-xs text-slate-400">
+        <div className="absolute right-2 bottom-2 text-xs text-[#94A3B8]">
           {message.length > 0 && (
             <span className={message.length > 1000 ? 'text-amber-500' : ''}>
               {message.length}
