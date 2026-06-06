@@ -10,12 +10,26 @@ export default function AudioCompanionPage() {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [resolvedMode, setResolvedMode] = useState<"standard" | "panic">(mode);
   const [usingFallbackAgent, setUsingFallbackAgent] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [recallContext, setRecallContext] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSignedUrl = async () => {
       try {
+        const sessionResponse = await fetch("/api/companion/sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provider: "elevenlabs", mode: "audio" }),
+        });
+        const sessionPayload = await sessionResponse.json();
+        if (!sessionResponse.ok || !sessionPayload.success) {
+          throw new Error(sessionPayload.error || "Unable to create Soothify session");
+        }
+        setSessionId(sessionPayload.data.session.sessionId);
+        setRecallContext(sessionPayload.data.recallContext ?? []);
+
         const response = await fetch(`/api/elevenlabs/token?mode=${mode}`);
         const data = await response.json();
 
@@ -67,6 +81,8 @@ export default function AudioCompanionPage() {
       signedUrl={signedUrl}
       mode={resolvedMode}
       usingFallbackAgent={usingFallbackAgent}
+      sessionId={sessionId}
+      recallContext={recallContext}
     />
   );
 }

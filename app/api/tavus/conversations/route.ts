@@ -9,6 +9,8 @@ const TavusConversationRequestSchema = z.object({
   conversationName: z.string().trim().min(1).max(120).optional(),
   conversationalContext: z.string().trim().max(2000).optional(),
   customGreeting: z.string().trim().max(500).optional(),
+  sessionId: z.string().trim().min(1).optional(),
+  recallContext: z.array(z.string().trim().min(1)).optional(),
   testMode: z.boolean().optional(),
 });
 
@@ -28,6 +30,10 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   }
 
   const body = TavusConversationRequestSchema.parse(await req.json().catch(() => ({})));
+  const memoryContext = body.recallContext?.length
+    ? `Known Soothify context for this user. Use gently and verify when relevant:\n- ${body.recallContext.join("\n- ")}`
+    : "";
+  const conversationalContext = [body.conversationalContext, memoryContext].filter(Boolean).join("\n\n");
 
   const tavusResponse = await fetch("https://tavusapi.com/v2/conversations", {
     method: "POST",
@@ -39,7 +45,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       ...(env.TAVUS_REPLICA_ID ? { replica_id: env.TAVUS_REPLICA_ID } : {}),
       ...(env.TAVUS_PERSONA_ID ? { persona_id: env.TAVUS_PERSONA_ID } : {}),
       conversation_name: body.conversationName ?? "Soothify Video Companion",
-      ...(body.conversationalContext ? { conversational_context: body.conversationalContext } : {}),
+      ...(conversationalContext ? { conversational_context: conversationalContext } : {}),
       ...(body.customGreeting ? { custom_greeting: body.customGreeting } : {}),
       ...(typeof body.testMode === "boolean" ? { test_mode: body.testMode } : {}),
     }),

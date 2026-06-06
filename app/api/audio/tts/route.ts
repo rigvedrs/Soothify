@@ -22,6 +22,10 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw API_ERRORS.UNPROCESSABLE_ENTITY("Text exceeds maximum length of 4000 characters");
   }
 
+  if (!env.OPENAI_API_KEY) {
+    throw API_ERRORS.INTERNAL_SERVER_ERROR("OPENAI_API_KEY is required for OpenAI text-to-speech.");
+  }
+
   const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
   try {
@@ -58,5 +62,4 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw error;
   }
 });
-
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type TavusConversation = {
   conversation_id: string;
@@ -16,8 +16,18 @@ type TavusApiResponse = {
   error?: string;
 };
 
+type CompanionSessionResponse = {
+  success: boolean;
+  data?: {
+    session: { sessionId: string };
+    recallContext: string[];
+  };
+  error?: string;
+};
+
 export default function TavusVideoCompanion() {
   const [conversation, setConversation] = useState<TavusConversation | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [ending, setEnding] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,12 +37,25 @@ export default function TavusVideoCompanion() {
     setError(null);
 
     try {
+      const sessionResponse = await fetch("/api/companion/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider: "tavus", mode: "video" }),
+      });
+      const sessionPayload = (await sessionResponse.json()) as CompanionSessionResponse;
+      if (!sessionResponse.ok || !sessionPayload.success || !sessionPayload.data) {
+        throw new Error(sessionPayload.error || "Unable to create Soothify session");
+      }
+      setSessionId(sessionPayload.data.session.sessionId);
+
       const response = await fetch("/api/tavus/conversations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           conversationName: "Soothify Video Companion",
           customGreeting: "Hi, I am here with you. How are you feeling right now?",
+          sessionId: sessionPayload.data.session.sessionId,
+          recallContext: sessionPayload.data.recallContext,
         }),
       });
 
@@ -49,21 +72,56 @@ export default function TavusVideoCompanion() {
     }
   }
 
+  const finalizeConversation = useCallback(
+    async (conversationToEnd: TavusConversation, shouldEndTavus: boolean) => {
+      setEnding(true);
+      setError(null);
+
+      try {
+        if (shouldEndTavus) {
+          await fetch(`/api/tavus/conversations/${conversationToEnd.conversation_id}/end`, {
+            method: "POST",
+          });
+        }
+        if (sessionId) {
+          await fetch(`/api/companion/sessions/${sessionId}/end`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              outcome: "unfinished",
+              summary: "Video companion session ended.",
+              tavusConversationId: conversationToEnd.conversation_id,
+            }),
+          });
+        }
+      } finally {
+        setConversation(null);
+        setSessionId(null);
+        setEnding(false);
+      }
+    },
+    [sessionId]
+  );
+
   async function endConversation() {
     if (!conversation) return;
-
-    setEnding(true);
-    setError(null);
-
-    try {
-      await fetch(`/api/tavus/conversations/${conversation.conversation_id}/end`, {
-        method: "POST",
-      });
-    } finally {
-      setConversation(null);
-      setEnding(false);
-    }
+    await finalizeConversation(conversation, true);
   }
+
+  useEffect(() => {
+    if (!conversation || ending) return;
+
+    const interval = window.setInterval(async () => {
+      const response = await fetch(`/api/tavus/conversations/${conversation.conversation_id}`);
+      const payload = (await response.json().catch(() => ({}))) as TavusApiResponse;
+      if (response.ok && payload.success && payload.data?.status === "ended") {
+        window.clearInterval(interval);
+        await finalizeConversation(conversation, false);
+      }
+    }, 10000);
+
+    return () => window.clearInterval(interval);
+  }, [conversation, ending, finalizeConversation]);
 
   return (
     <main className="mx-auto max-w-5xl space-y-5">
